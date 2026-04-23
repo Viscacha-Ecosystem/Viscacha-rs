@@ -1,6 +1,6 @@
 # viscacha-rs
 
-A high-performance job queue server written in Rust. Drop-in backend for the
+A high-performance job queue server written in Rust. Drop in backend for the
 [viscacha Python SDK](https://pypi.org/project/viscacha/), or use it standalone
 via its HTTP API.
 
@@ -60,7 +60,7 @@ dashboard all stays exactly the same.
 ### Build
 
 ```bash
-git clone https://github.com/SkylarM-B/Viscacha
+https://github.com/Viscacha-Ecosystem/Viscacha-rs/
 cd viscacha-rs
 cargo build --release -p viscacha-api
 ```
