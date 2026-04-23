@@ -94,7 +94,7 @@ def synthesize(question: str, perspectives: list[dict]) -> str:
     )
     resp = ai.messages.create(
         model=MODEL,
-        max_tokens=800,
+        max_tokens=1500,
         messages=[{"role": "user", "content": prompt}],
     )
     return resp.content[0].text.strip()
