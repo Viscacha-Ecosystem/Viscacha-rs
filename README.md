@@ -1,21 +1,21 @@
 # viscacha-rs
 
 A high-performance job queue server written in Rust. Drop-in backend for the
-[viscacha Python SDK](https://pypi.org/project/viscacha/) — or use it standalone
+[viscacha Python SDK](https://pypi.org/project/viscacha/), or use it standalone
 via its HTTP API.
 
-No broker. No Redis. No sidecar. One binary, one SQLite file.
+Zero broker, Redis, or sidecar. It is just one binary, and one SQLite file.
 
 ---
 
 ## Why
 
-The Python library runs jobs in-process, which is great for development and
+The Python library runs jobs in-process, which is great for prototyping and
 single-machine pipelines. When you need to scale workers across machines, add
 persistence that survives restarts, or hand jobs off to non-Python services,
-you need a server.
+you will need a server.
 
-`viscacha-rs` is that server. It speaks the same HTTP protocol the Python SDK
+`viscacha-rs` is that server! It speaks the same HTTP protocol the Python SDK
 already knows, so switching is one line of code:
 
 ```python
@@ -26,8 +26,8 @@ client = Client()
 client = Client(url="http://localhost:8000")
 ```
 
-Everything else — `enqueue`, `wait`, `cancel`, the `Worker` decorator, the
-dashboard — stays exactly the same.
+Everything else: `enqueue`, `wait`, `cancel`, the `Worker` decorator, and the
+dashboard all stays exactly the same.
 
 ---
 
@@ -35,11 +35,11 @@ dashboard — stays exactly the same.
 
 - **Crash-safe by default.** Every operation is appended to a SQLite WAL
   event log before it touches in-memory state. On restart, the log replays
-  deterministically and the queue is fully restored.
+  deterministically, and the queue is fully restored.
 
 - **Lease-based claiming.** Workers hold a timed lease on each job. If a
   worker crashes or stalls, the lease expires and the job is automatically
-  returned to the queue — no manual intervention required.
+  returned to the queue with no manual intervention required.
 
 - **Automatic retries.** Jobs that fail are re-queued up to `max_retries`
   times, then marked permanently failed. The full retry history is preserved.
@@ -47,11 +47,11 @@ dashboard — stays exactly the same.
 - **Periodic snapshots.** The event log is compacted automatically. Startup
   time stays constant regardless of how many jobs have run.
 
-- **Clean HTTP API.** Standard JSON over HTTP. Any language, any HTTP client.
-  OpenAPI spec coming.
+- **Clean HTTP API.** Standard JSON over HTTP. Any language or HTTP client.
+  OpenAPI coming.
 
 - **Zero dependencies to deploy.** A single statically-linked binary. No
-  runtime, no VM, no container required (though it runs fine in one).
+  runtime, VM, or container required (although it runs fine in one).
 
 ---
 
@@ -71,14 +71,14 @@ cargo build --release -p viscacha-api
 # Persistent — state survives restarts
 ./target/release/viscacha jobs.db
 
-# In-memory — useful for testing
+# In memory — useful for testing
 ./target/release/viscacha
 
 # Custom bind address
 ./target/release/viscacha jobs.db 0.0.0.0:9000
 ```
 
-The server prints the address it is listening on and is ready immediately.
+The server prints the address it is listening on and is ready immediately!
 
 ### Use with Python
 
@@ -94,7 +94,7 @@ worker = Worker(client)
 
 @worker.job("process_document", max_retries=3, lease_ttl=60.0)
 def process_document(path: str) -> dict:
-    # ... do work ...
+    # ... your stuff ...
     return {"pages": 12}
 
 worker.run(blocking=False)
@@ -105,8 +105,8 @@ print(result.result)  # {"pages": 12}
 ```
 
 Workers can run on any machine that can reach the server. Enqueue from one
-process, consume from another, check status from a third — all using the same
-Python SDK.
+process, consume from another, check status from a third; all using the same
+Python SDK!
 
 ---
 
@@ -132,7 +132,7 @@ Content-Type: application/json
 
 {
   "job_type": "send_email",
-  "args": { "to": "alice@example.com" },
+  "args": { "to": "billybob@example.com" },
   "max_retries": 3
 }
 ```
@@ -150,7 +150,7 @@ All read endpoints return jobs in this shape:
   "id":          "b3d2f1a0-...",
   "status":      "done",
   "job_type":    "send_email",
-  "args":        { "to": "alice@example.com" },
+  "args":        { "to": "joeschmo@example.com" },
   "result":      { "message_id": "msg_123" },
   "error":       null,
   "retries":     0,
@@ -186,16 +186,16 @@ Client / Worker  <------------->  viscacha-rs
                               +---------------+
 ```
 
-**Event sourcing.** Every mutation (enqueue, claim, complete, fail, cancel,
+**Event sourcing** Every mutation (enqueue, claim, complete, fail, cancel,
 expire) is written to the event log before it is applied in memory. The
-in-memory state is always a pure projection of the log. Crash at any point;
+in-memory state is always a pure projection of the log. Crash at any point yet
 replay rebuilds the exact same state.
 
-**Lease reaper.** A background tokio task scans for expired leases on a fixed
+**Lease reaper** A background tokio task scans for expired leases on a fixed
 interval. Expired jobs are returned to `pending` and an `Expire` event is
 appended so the expiry survives the next restart.
 
-**Snapshots.** Periodically the current job state is serialized to the
+**Snapshots** Periodically, the current job state is serialized to the
 `snapshots` table and events older than that snapshot are truncated. This
 bounds replay time and disk usage.
 
@@ -205,7 +205,7 @@ bounds replay time and disk usage.
 
 ```
 crates/
-  core/      Job types, state machine, in-memory TupleSpace, lease reaper
+  core/      Job types, state machine, in memory TupleSpace, lease reaper
   storage/   SQLite event log, snapshots, replay, PersistentSpace wrapper
   api/       Axum HTTP server, route handlers, request/response models
 ```
@@ -245,7 +245,7 @@ The test suite covers the full lifecycle end-to-end:
 
 - [ ] Lease reaper wired into `PersistentSpace` (currently targets `TupleSpace` directly)
 - [ ] `cargo run` dev server with `--watch` flag for local development
-- [ ] OpenAPI spec generation
+- [ ] OpenAPI generation
 - [ ] Multi-tenancy via API key middleware
 - [ ] Prometheus metrics endpoint
 - [ ] Configurable snapshot interval and log retention
@@ -254,18 +254,18 @@ The test suite covers the full lifecycle end-to-end:
 
 ## Relation to the Python SDK
 
-`viscacha-rs` implements the same wire protocol that `viscacha` uses when
+`viscacha-rs` implements the same wire protocol that `viscacha` uses when its
 initialized with a `url=` argument. The Python SDK is the reference
 implementation and the source of the protocol contract. The Rust server
-is a production-grade backend for it.
+is a production grade backend for it.
 
 If you are building a pure-Python pipeline that runs on a single machine,
-the Python SDK alone is sufficient. Reach for `viscacha-rs` when you need:
+the Python SDK alone is sufficient enough. You should reach for `viscacha-rs` when you need:
 
 - Workers on separate machines
 - Persistence across process restarts
-- Higher throughput than a Python server can provide
-- A non-Python service enqueueing or consuming jobs
+- Higher throughput than a Python server can provide (limited by GIL)
+- A not Python service enqueueing or consuming jobs
 
 ---
 
