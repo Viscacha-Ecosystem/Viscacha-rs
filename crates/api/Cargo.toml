@@ -1,0 +1,22 @@
+[package]
+name    = "viscacha-api"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "viscacha"
+path = "src/main.rs"
+
+[dependencies]
+viscacha-core    = { path = "../core" }
+viscacha-storage = { path = "../storage" }
+serde            = { workspace = true }
+serde_json       = { workspace = true }
+tokio            = { workspace = true }
+axum             = { workspace = true }
+thiserror        = { workspace = true }
+
+[dev-dependencies]
+tower          = { workspace = true }
+http-body-util = { workspace = true }
+tempfile       = { workspace = true }
