@@ -18,7 +18,7 @@ impl TupleSpace {
         }
     }
 
-    //  write ops 
+    // write ops
 
     /// Enqueue a new job. Returns the assigned JobId.
     pub fn enqueue(&self, job_type: String, args: serde_json::Value, max_retries: u8, now: f64) -> JobId {
