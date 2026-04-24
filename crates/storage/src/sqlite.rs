@@ -91,7 +91,7 @@ impl SqliteLog {
             "INSERT INTO snapshots (seq, timestamp, data) VALUES (?1, ?2, ?3)",
             params![seq, timestamp, data],
         )?;
-        Ok(()) ///sleepy guy :(
+        Ok(())
     }
 
     /// Load the most recent snapshot. Returns (event_seq, jobs) or None if no snapshot exists.

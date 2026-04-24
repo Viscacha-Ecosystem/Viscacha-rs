@@ -38,7 +38,7 @@ impl PersistentSpace {
         Ok(replay(snapshot_jobs, events))
     }
 
-    //  write op
+    // write ops
 
     pub fn enqueue(&self, job_type: String, args: serde_json::Value, max_retries: u8) -> Result<JobId> {
         let now = unix_now();
