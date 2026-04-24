@@ -1,13 +1,16 @@
+pub mod dashboard;
 pub mod error;
 pub mod models;
 pub mod routes;
 
 use std::sync::Arc;
 
-use axum::routing::{get, post};
+use axum::routing::get;
+use axum::routing::post;
 use axum::Router;
 use viscacha_storage::PersistentSpace;
 
+use crate::dashboard::{dashboard_metrics, dashboard_page};
 use crate::routes::{
     cancel_job, claim_job, complete_job, enqueue_job, fail_job, get_job, list_jobs,
 };
@@ -21,6 +24,8 @@ pub fn router(space: Arc<PersistentSpace>) -> Router {
         .route("/jobs/{id}/cancel",   post(cancel_job))
         .route("/jobs/{id}/complete", post(complete_job))
         .route("/jobs/{id}/fail",     post(fail_job))
+        .route("/dashboard",          get(dashboard_page))
+        .route("/dashboard/metrics",  get(dashboard_metrics))
         .with_state(space)
 }
 
