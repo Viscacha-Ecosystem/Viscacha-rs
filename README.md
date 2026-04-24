@@ -34,14 +34,14 @@ dashboard all stays exactly the same.
 ## Features
 
 - **Crash-safe by default.** Every operation is appended to a SQLite WAL
-  event log before it touches in-memory state. On restart, the log replays
+  event log before it touches in memory state. On restart, the log replays
   deterministically, and the queue is fully restored.
 
 - **Lease-based claiming.** Workers hold a timed lease on each job. If a
   worker crashes or stalls, the lease expires and the job is automatically
   returned to the queue with no manual intervention required.
 
-- **Automatic retries.** Jobs that fail are re-queued up to `max_retries`
+- **Automatic retries.** Jobs that fail are requeued up to `max_retries`
   times, then marked permanently failed. The full retry history is preserved.
 
 - **Periodic snapshots.** The event log is compacted automatically. Startup
@@ -50,7 +50,7 @@ dashboard all stays exactly the same.
 - **Clean HTTP API.** Standard JSON over HTTP. Any language or HTTP client.
   OpenAPI coming.
 
-- **Zero dependencies to deploy.** A single statically-linked binary. No
+- **Zero dependencies to deploy.** A single statically linked binary. No
   runtime, VM, or container required (although it runs fine in one).
 
 ---
@@ -173,12 +173,12 @@ All read endpoints return jobs in this shape:
 Client / Worker  <------------->  viscacha-rs
                                       |
                               +-------+-------+
-                              |  TupleSpace   |  <- in-memory projection
+                              |  TupleSpace   |  <- in memory projection
                               |  (DashMap)    |
                               +-------+-------+
                                       |
                               +-------+-------+
-                              |  Event Log    |  <- append-only source of truth
+                              |  Event Log    |  <- append only source of truth
                               |  (SQLite WAL) |
                               +-------+-------+
                                       |
@@ -189,7 +189,7 @@ Client / Worker  <------------->  viscacha-rs
 
 **Event sourcing** Every mutation (enqueue, claim, complete, fail, cancel,
 expire) is written to the event log before it is applied in memory. The
-in-memory state is always a pure projection of the log. Crash at any point yet
+in memory state is always a pure projection of the log. Crash at any point yet
 replay rebuilds the exact same state.
 
 **Lease reaper** A background tokio task scans for expired leases on a fixed
@@ -247,7 +247,7 @@ The test suite covers the full lifecycle end-to-end:
 - [ ] Lease reaper wired into `PersistentSpace` (currently targets `TupleSpace` directly)
 - [ ] `cargo run` dev server with `--watch` flag for local development
 - [ ] OpenAPI generation
-- [ ] Multi-tenancy via API key middleware
+- [ ] Multi tenancy via API key middleware
 - [ ] Prometheus metrics endpoint
 - [ ] Configurable snapshot interval and log retention
 
@@ -260,7 +260,7 @@ initialized with a `url=` argument. The Python SDK is the reference
 implementation and the source of the protocol contract. The Rust server
 is a production grade backend for it.
 
-If you are building a pure-Python pipeline that runs on a single machine,
+If you are building a pure Python pipeline that runs on a single machine,
 the Python SDK alone is sufficient enough. You should reach for `viscacha-rs` when you need:
 
 - Workers on separate machines
