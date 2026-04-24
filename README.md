@@ -123,6 +123,7 @@ All endpoints accept and return JSON.
 | `POST` | `/jobs/claim` | Claim the next available job (used by Worker) |
 | `POST` | `/jobs/{id}/complete` | Mark a claimed job done |
 | `POST` | `/jobs/{id}/fail` | Mark a claimed job failed |
+| `DASHBOARD` | `/dashboard` | Metrics, log, and gnat map |
 
 ### Enqueue
 
