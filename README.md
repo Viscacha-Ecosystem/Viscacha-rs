@@ -63,7 +63,7 @@ stays exactly the same.
 ### Build
 
 ```bash
-git clone https://github.com/SkylarM-B/Viscacha
+git clone https://github.com/viscacha-ecosystem/Viscacha-rs
 cd viscacha-rs
 cargo build --release -p viscacha-api
 ```
