@@ -57,7 +57,7 @@ Everything else stays the same: `enqueue`, `wait`, `cancel`, the `Worker` decora
 ### Docker (recommended)
 
 ```bash
-git clone https://github.com/SkylarM-B/Viscacha
+git clone https://github.com//Viscacha-Ecosystem/Viscacha
 cd viscacha-rs
 docker compose up
 ```
@@ -68,7 +68,7 @@ docker compose up
 ### Build from source
 
 ```bash
-git clone https://github.com/SkylarM-B/Viscacha
+git clone https://github.com//Viscacha-Ecosystem/Viscacha
 cd viscacha-rs
 cargo build --release -p viscacha-api
 ```
