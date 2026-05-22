@@ -3,7 +3,14 @@
 A job queue server written in Rust. Works as a drop-in backend for the
 [viscacha Python SDK](https://pypi.org/project/viscacha/), or standalone via HTTP.
 
-No broker, no Redis, no sidecar. One binary, one SQLite file.
+No broker, Redis, or sidecar. One binary + SQLite file.
+
+| Tool | Complexity | Infra Burden |
+|---|---|---|
+| Celery | Medium-high | Redis / RabbitMQ |
+| RQ | Medium | Redis |
+| Temporal | Very high | Heavy |
+| **Viscacha** | Low | None |
 
 ---
 
