@@ -75,7 +75,7 @@ docker compose up
 ### Build from source
 
 ```bash
-git clone https://github.com//Viscacha-Ecosystem/Viscacha
+git clone https://github.com//Viscacha-Ecosystem/Viscacha-rs
 cd viscacha-rs
 cargo build --release -p viscacha-api
 ```
