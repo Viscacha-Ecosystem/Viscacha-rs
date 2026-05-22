@@ -1,0 +1,41 @@
+services:
+  viscacha:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - viscacha-data:/data
+    environment:
+      # Remove or leave blank to run unauthenticated (dev mode)
+      VISCACHA_API_KEY: ""
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=7d
+    depends_on:
+      - viscacha
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "9001:3000"
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_INSTALL_PLUGINS: marcusolsson-gantt-panel
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: marcusolsson-gantt-panel
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+
+volumes:
+  viscacha-data:

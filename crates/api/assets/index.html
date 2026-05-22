@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Viscacha</title>
+<style>
+/* ── theme tokens ────────────────────────────────────────────────────────── */
+:root {
+  --bg:       #0d0d0d;
+  --bg1:      #111111;
+  --bg2:      #161616;
+  --bg3:      #1e1e1e;
+  --bd:       #1e1e1e;
+  --bd2:      #252525;
+  --bd3:      #2a2a2a;
+  --tx:       #cccccc;
+  --tx2:      #999999;
+  --tx3:      #666666;
+  --tx4:      #444444;
+  --tx5:      #2a2a2a;
+  --tx6:      #1a1a1a;
+  --acc:      #44cc44;
+  --acc-bg:   #0d1a0d;
+  --acc-bd:   #2a4a2a;
+  --err:      #cc4444;
+  --warn:     #cc8844;
+  --st-p:     #777777;
+  --st-c:     #cccc00;
+  --st-d:     #44cc44;
+  --st-f:     #cc4444;
+  --st-x:     #333333;
+  --op-enq:   #5a9fd4;
+  --op-clm:   #cccc00;
+  --op-don:   #44cc44;
+  --op-fai:   #cc4444;
+  --op-can:   #555555;
+  --op-exp:   #666666;
+  --op-ret:   #cc8844;
+  --op-pur:   #2a2a2a;
+  --bdg-p-bg: #0a1520; --bdg-p-tx: #5a9fd4;
+  --bdg-c-bg: #1e1a00; --bdg-c-tx: #cccc00;
+  --bdg-d-bg: #051205; --bdg-d-tx: #44cc44;
+  --bdg-f-bg: #180505; --bdg-f-tx: #cc4444;
+  --bdg-x-bg: #141414; --bdg-x-tx: #444444;
+}
+:root.light {
+  --bg:       #f4f4f4;
+  --bg1:      #ffffff;
+  --bg2:      #f0f0f0;
+  --bg3:      #e6e6e6;
+  --bd:       #e0e0e0;
+  --bd2:      #d0d0d0;
+  --bd3:      #c4c4c4;
+  --tx:       #1a1a1a;
+  --tx2:      #555555;
+  --tx3:      #888888;
+  --tx4:      #aaaaaa;
+  --tx5:      #bbbbbb;
+  --tx6:      #cccccc;
+  --acc:      #1a7a1a;
+  --acc-bg:   #eaf4ea;
+  --acc-bd:   #5aaa5a;
+  --err:      #882222;
+  --warn:     #885500;
+  --st-p:     #888888;
+  --st-c:     #997700;
+  --st-d:     #1a7a1a;
+  --st-f:     #882222;
+  --st-x:     #bbbbbb;
+  --op-enq:   #1a55aa;
+  --op-clm:   #997700;
+  --op-don:   #1a7a1a;
+  --op-fai:   #882222;
+  --op-can:   #888888;
+  --op-exp:   #999999;
+  --op-ret:   #885500;
+  --op-pur:   #cccccc;
+  --bdg-p-bg: #e8f0ff; --bdg-p-tx: #1a55aa;
+  --bdg-c-bg: #fff8e0; --bdg-c-tx: #997700;
+  --bdg-d-bg: #eafaea; --bdg-d-tx: #1a7a1a;
+  --bdg-f-bg: #faeaea; --bdg-f-tx: #882222;
+  --bdg-x-bg: #f0f0f0; --bdg-x-tx: #888888;
+}
+
+/* ── reset ───────────────────────────────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: monospace;
+  background: var(--bg);
+  color: var(--tx);
+  font-size: 13px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: background 0.15s, color 0.15s;
+}
+
+/* ── topbar ──────────────────────────────────────────────────────────────── */
+#topbar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 12px;
+  background: var(--bg1);
+  border-bottom: 1px solid var(--bd);
+  flex-shrink: 0;
+  height: 36px;
+}
+#logo { color: var(--tx); font-size: 14px; letter-spacing: 3px; margin-right: 20px; }
+.tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--tx4);
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 0 12px;
+  height: 36px;
+}
+.tab-btn:hover { color: var(--tx2); }
+.tab-btn.active { color: var(--tx); border-bottom-color: var(--acc); }
+#right-bar { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--tx4); }
+#theme-btn {
+  background: none;
+  border: 1px solid var(--bd3);
+  color: var(--tx3);
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 11px;
+  padding: 2px 8px;
+}
+#theme-btn:hover { color: var(--tx); border-color: var(--tx3); }
+#api-key-in {
+  background: var(--bg2);
+  border: 1px solid var(--bd);
+  color: var(--tx2);
+  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 11px;
+  width: 170px;
+}
+#api-key-in:focus { outline: none; border-color: var(--bd3); }
+.mini-btn {
+  background: none;
+  border: 1px solid var(--bd);
+  color: var(--tx4);
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 11px;
+  padding: 2px 7px;
+}
+.mini-btn:hover { color: var(--tx); border-color: var(--tx3); }
+#conn-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--bd3); }
+#conn-dot.ok  { background: var(--acc); }
+#conn-dot.err { background: var(--err); }
+
+/* ── panes ───────────────────────────────────────────────────────────────── */
+#panes { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.pane { display: none; flex: 1; overflow: hidden; flex-direction: column; }
+.pane.active { display: flex; }
+
+/* ── metrics bar ─────────────────────────────────────────────────────────── */
+#metrics {
+  padding: 5px 12px;
+  background: var(--bg1);
+  border-bottom: 1px solid var(--bd);
+  font-size: 12px;
+  color: var(--tx4);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+#metrics .mv   { color: var(--tx2); }
+#metrics .mok  { color: var(--st-d); }
+#metrics .mwrn { color: var(--st-c); }
+#metrics .merr { color: var(--err); }
+
+/* ── control row ─────────────────────────────────────────────────────────── */
+.ctrl {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--bd);
+  flex-shrink: 0;
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+.ctrl label { color: var(--tx4); }
+.ctrl input[type=text],
+.ctrl input[type=number] {
+  background: var(--bg);
+  border: 1px solid var(--bd2);
+  color: var(--tx);
+  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 12px;
+}
+.ctrl input[type=datetime-local] {
+  background: var(--bg);
+  border: 1px solid var(--bd2);
+  color: var(--tx);
+  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 11px;
+}
+.ctrl input[type=datetime-local]::-webkit-calendar-picker-indicator {
+  filter: var(--cal-filter, invert(0.4));
+  cursor: pointer;
+}
+.ctrl input:focus { outline: none; border-color: var(--bd3); }
+.btn {
+  background: var(--bg2);
+  border: 1px solid var(--bd3);
+  color: var(--tx2);
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 11px;
+  padding: 3px 10px;
+  letter-spacing: 0.5px;
+}
+.btn:hover { border-color: var(--tx3); color: var(--tx); }
+.btn.go { border-color: var(--acc-bd); color: var(--acc); }
+.btn.go:hover { background: var(--acc-bg); }
+.sep { color: var(--bd3); }
+#live-count { color: var(--tx5); font-size: 11px; }
+#live-age   { margin-left: auto; font-size: 10px; color: var(--tx5); }
+
+/* ── job table ───────────────────────────────────────────────────────────── */
+.tbl-wrap { flex: 1; overflow-y: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th {
+  background: var(--bg2);
+  color: var(--tx4);
+  text-align: left;
+  padding: 4px 8px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  font-weight: normal;
+  border-bottom: 1px solid var(--bd);
+  font-size: 10px;
+  letter-spacing: 0.8px;
+}
+td { padding: 3px 8px; border-bottom: 1px solid var(--bd); vertical-align: middle; }
+tr.row { cursor: pointer; }
+tr.row:hover td { background: var(--bg2); }
+.st-pending   { color: var(--st-p); }
+.st-claimed   { color: var(--st-c); }
+.st-done      { color: var(--st-d); }
+.st-failed    { color: var(--st-f); }
+.st-cancelled { color: var(--st-x); }
+.empty-row td { text-align: center; color: var(--tx5); padding: 30px; }
+
+/* ── event log ───────────────────────────────────────────────────────────── */
+.op-enqueue  { color: var(--op-enq); }
+.op-claim    { color: var(--op-clm); }
+.op-complete { color: var(--op-don); }
+.op-fail     { color: var(--op-fai); }
+.op-cancel   { color: var(--op-can); }
+.op-expire   { color: var(--op-exp); }
+.op-retry    { color: var(--op-ret); }
+.op-purge    { color: var(--op-pur); }
+#ev-status, #tm-status { font-size: 11px; color: var(--tx3); }
+
+/* ── time machine strip ──────────────────────────────────────────────────── */
+#tm-strip {
+  height: 48px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--bd);
+  position: relative;
+  cursor: crosshair;
+  flex-shrink: 0;
+}
+#tm-canvas { display: block; width: 100%; height: 100%; }
+#tm-vline { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--st-c); pointer-events: none; display: none; }
+#tm-hlabel { position: absolute; bottom: 3px; font-size: 10px; color: var(--st-c); pointer-events: none; display: none; white-space: nowrap; }
+#tm-info { padding: 4px 12px; font-size: 11px; color: var(--tx4); border-bottom: 1px solid var(--bd); flex-shrink: 0; display: none; }
+#tm-info .at { color: var(--st-c); }
+.empty-hint { display: flex; align-items: center; justify-content: center; flex: 1; color: var(--tx5); font-size: 12px; }
+
+/* ── inspector ───────────────────────────────────────────────────────────── */
+#detail {
+  position: fixed;
+  right: 0; top: 0;
+  height: 100vh;
+  width: 500px;
+  background: var(--bg1);
+  border-left: 1px solid var(--bd);
+  overflow-y: auto;
+  display: none;
+  z-index: 200;
+}
+#d-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--bd);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+#d-type { font-size: 14px; color: var(--tx); }
+#d-badge {
+  display: inline-block;
+  padding: 1px 7px;
+  font-size: 11px;
+  border-radius: 2px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+#d-badge.pending   { background: var(--bdg-p-bg); color: var(--bdg-p-tx); }
+#d-badge.claimed   { background: var(--bdg-c-bg); color: var(--bdg-c-tx); }
+#d-badge.done      { background: var(--bdg-d-bg); color: var(--bdg-d-tx); }
+#d-badge.failed    { background: var(--bdg-f-bg); color: var(--bdg-f-tx); }
+#d-badge.cancelled { background: var(--bdg-x-bg); color: var(--bdg-x-tx); }
+#d-x {
+  background: none;
+  border: none;
+  color: var(--tx4);
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 14px;
+  padding: 0;
+  line-height: 1;
+}
+#d-x:hover { color: var(--err); }
+#d-body { padding: 10px; font-size: 12px; }
+#d-id { font-size: 10px; color: var(--tx5); margin-bottom: 8px; cursor: pointer; user-select: all; }
+#d-id:hover { color: var(--tx3); }
+#d-acts { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+
+/* timeline bar */
+#d-bar-wrap { padding: 8px; background: var(--bg); border: 1px solid var(--bd); margin-bottom: 8px; }
+#d-bar { position: relative; height: 8px; background: var(--bg3); border-radius: 1px; }
+#d-bq  { position: absolute; top: 0; bottom: 0; background: var(--bd3); }
+#d-be  { position: absolute; top: 0; bottom: 0; border-radius: 0 1px 1px 0; }
+#d-stats { display: flex; flex-wrap: wrap; gap: 2px 16px; margin-top: 6px; font-size: 11px; color: var(--tx5); }
+#d-stats .sv { color: var(--tx2); }
+#d-stats .sw { color: var(--warn); }
+
+/* data sections */
+.ds { border: 1px solid var(--bd); margin-bottom: 6px; }
+.ds-hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 8px;
+  background: var(--bg2);
+  color: var(--tx4);
+  font-size: 10px;
+  letter-spacing: 0.8px;
+}
+.ds-hd .cp {
+  background: none;
+  border: none;
+  color: var(--tx5);
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 10px;
+  padding: 0;
+}
+.ds-hd .cp:hover { color: var(--tx2); }
+.ds pre {
+  margin: 0;
+  padding: 8px;
+  font-size: 11px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: var(--tx2);
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+/* trace */
+#d-trace { font-size: 11px; line-height: 2; padding: 4px 0; }
+.te { display: block; }
+.te-ts { color: var(--tx5); }
+.te-dt { color: var(--tx4); display: inline-block; width: 80px; }
+.te-enqueued .te-ev { color: var(--tx3); }
+.te-claimed  .te-ev { color: var(--st-c); }
+.te-done     .te-ev { color: var(--st-d); }
+.te-failed   .te-ev { color: var(--st-f); }
+.te-cancelled .te-ev { color: var(--st-x); }
+.te-meta { color: var(--tx4); }
+
+/* per-job event log in inspector */
+#d-jev { font-size: 11px; }
+.jev { display: flex; gap: 8px; padding: 2px 8px; border-bottom: 1px solid var(--bd); cursor: pointer; align-items: center; }
+.jev:hover { background: var(--bg2); }
+.jev-seq  { color: var(--tx5); width: 44px; flex-shrink: 0; text-align: right; font-size: 10px; }
+.jev-ts   { color: var(--tx4); width: 84px; flex-shrink: 0; font-size: 10px; }
+.jev-op   { width: 80px; flex-shrink: 0; }
+.jev-meta { color: var(--tx3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bd3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--tx4); }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <span id="logo">VISCACHA</span>
+  <button class="tab-btn active" data-tab="live">LIVE</button>
+  <button class="tab-btn" data-tab="tm">TIME MACHINE</button>
+  <button class="tab-btn" data-tab="ev">EVENT LOG</button>
+  <div id="right-bar">
+    <button id="theme-btn" onclick="toggleTheme()">LIGHT</button>
+    <span>API KEY</span>
+    <input type="password" id="api-key-in" placeholder="(open)">
+    <button class="mini-btn" onclick="saveKey()">SAVE</button>
+    <div id="conn-dot" title="connection"></div>
+  </div>
+</div>
+
+<!-- PANES -->
+<div id="panes">
+
+  <!-- LIVE -->
+  <div id="pane-live" class="pane active">
+    <div id="metrics">connecting…</div>
+    <div class="ctrl">
+      <label>filter</label>
+      <input type="text" id="lf" placeholder="type · status · id" oninput="liveRender()" style="width:240px">
+      <span id="live-count"></span>
+      <span id="live-age"></span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>ID</th><th>TYPE</th><th>STATUS</th>
+          <th>WAIT</th><th>EXEC</th><th>RETRIES</th><th>WORKER</th><th>ENQUEUED</th>
+        </tr></thead>
+        <tbody id="lt"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TIME MACHINE -->
+  <div id="pane-tm" class="pane">
+    <div class="ctrl">
+      <label>at</label>
+      <input type="datetime-local" id="tm-dt" step="1">
+      <button class="btn go" onclick="tmGo()">GO</button>
+      <button class="btn" onclick="tmSetNow()">NOW &minus;1m</button>
+      <span id="tm-status"></span>
+    </div>
+    <div id="tm-strip">
+      <canvas id="tm-canvas"></canvas>
+      <div id="tm-vline"></div>
+      <div id="tm-hlabel"></div>
+    </div>
+    <div id="tm-info">
+      snapshot at <span class="at" id="tm-at"></span> &mdash;
+      <span id="tm-jc" style="color:var(--tx2)"></span> jobs
+    </div>
+    <div class="tbl-wrap" id="tm-tbl-wrap" style="display:none">
+      <table>
+        <thead><tr>
+          <th>ID</th><th>TYPE</th><th>STATUS</th>
+          <th>WAIT</th><th>EXEC</th><th>RETRIES</th><th>WORKER</th><th>ENQUEUED</th>
+        </tr></thead>
+        <tbody id="tt"></tbody>
+      </table>
+    </div>
+    <div class="empty-hint" id="tm-hint">pick a time and click GO &mdash; or click the strip above</div>
+  </div>
+
+  <!-- EVENT LOG -->
+  <div id="pane-ev" class="pane">
+    <div class="ctrl">
+      <label>from</label><input type="datetime-local" id="ef" step="1">
+      <label>to</label><input type="datetime-local" id="et" step="1">
+      <label>limit</label><input type="number" id="el" value="500" style="width:62px;text-align:right">
+      <button class="btn go" onclick="evLoad()">LOAD RANGE</button>
+      <span class="sep">|</span>
+      <label>job id</label>
+      <input type="text" id="ej" placeholder="full uuid" style="width:290px">
+      <button class="btn" onclick="evLoadJob()">LOAD JOB</button>
+      <span id="ev-status"></span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>SEQ</th><th>TIMESTAMP</th><th>OP</th><th>JOB ID</th><th>DETAIL</th>
+        </tr></thead>
+        <tbody id="evt"></tbody>
+      </table>
+    </div>
+    <div class="empty-hint" id="ev-hint">load a time range or a specific job id</div>
+  </div>
+
+</div>
+
+<!-- INSPECTOR -->
+<div id="detail">
+  <div id="d-top">
+    <div>
+      <span id="d-type"></span>
+      <span id="d-badge"></span>
+    </div>
+    <button id="d-x" onclick="closeDetail()">&#xd7; close</button>
+  </div>
+  <div id="d-body">
+    <div id="d-id" onclick="copyStr(this.textContent)" title="click to copy"></div>
+    <div id="d-acts"></div>
+
+    <div id="d-bar-wrap">
+      <div id="d-bar"><div id="d-bq"></div><div id="d-be"></div></div>
+      <div id="d-stats"></div>
+    </div>
+
+    <div class="ds">
+      <div class="ds-hd">TRACE</div>
+      <div id="d-trace"></div>
+    </div>
+
+    <div class="ds">
+      <div class="ds-hd">EVENT HISTORY <button class="cp" onclick="reloadJev()">refresh</button></div>
+      <div id="d-jev"><div style="padding:8px;color:var(--tx5)">loading…</div></div>
+    </div>
+
+    <div class="ds">
+      <div class="ds-hd">ARGS <button class="cp" onclick="copyEl('d-args')">copy</button></div>
+      <pre id="d-args"></pre>
+    </div>
+
+    <div class="ds" id="d-res-sec">
+      <div class="ds-hd">RESULT <button class="cp" onclick="copyEl('d-res')">copy</button></div>
+      <pre id="d-res"></pre>
+    </div>
+
+    <div class="ds" id="d-err-sec">
+      <div class="ds-hd" style="color:var(--err)">ERROR</div>
+      <pre id="d-err" style="color:var(--err)"></pre>
+    </div>
+
+    <div class="ds">
+      <div class="ds-hd">FULL JSON <button class="cp" onclick="copyEl('d-json')">copy</button></div>
+      <pre id="d-json"></pre>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ── state ─────────────────────────────────────────────────────────────────────
+let liveJobs   = [];
+let lastPollTs = 0;
+let openJob    = null;
+let openSource = null;
+let stripEvs   = [];
+let stripRange = null;
+
+// ── theme ─────────────────────────────────────────────────────────────────────
+function isLight() { return document.documentElement.classList.contains('light'); }
+
+function toggleTheme() {
+  const light = !isLight();
+  document.documentElement.classList.toggle('light', light);
+  document.getElementById('theme-btn').textContent = light ? 'DARK' : 'LIGHT';
+  document.getElementById('tm-canvas').style.setProperty(
+    '--cal-filter', light ? 'invert(0.6)' : 'invert(0.4)');
+  localStorage.setItem('vq_theme', light ? 'light' : 'dark');
+  drawStrip();
+}
+
+function stripColors() {
+  const s = getComputedStyle(document.documentElement);
+  const v = n => s.getPropertyValue(n).trim();
+  return {
+    enqueue: v('--op-enq'), claim: v('--op-clm'), complete: v('--op-don'),
+    fail: v('--op-fai'),  cancel: v('--op-can'),  expire: v('--op-exp'),
+    retry: v('--op-ret'), purge: v('--op-pur'),
+  };
+}
+
+// ── api ───────────────────────────────────────────────────────────────────────
+function apiKey() { return localStorage.getItem('vq_key') || ''; }
+
+function saveKey() {
+  const v = document.getElementById('api-key-in').value.trim();
+  localStorage.setItem('vq_key', v);
+}
+
+async function api(path, opts) {
+  const k = apiKey();
+  const h = {};
+  if (k) h['Authorization'] = 'Bearer ' + k;
+  const r = await fetch(path, { ...(opts || {}), headers: h });
+  if (!r.ok) { const t = await r.text().catch(() => r.statusText); throw new Error(r.status + ': ' + t); }
+  return r.json();
+}
+
+function dot(cls) { document.getElementById('conn-dot').className = cls; }
+
+// ── tabs ──────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.pane').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('pane-' + b.dataset.tab).classList.add('active');
+    if (b.dataset.tab === 'tm') tmLoadStrip();
+  });
+});
+
+// ── format ────────────────────────────────────────────────────────────────────
+function fms(s) {
+  if (s == null) return '—';
+  const ms = s * 1000;
+  if (ms < 0)     return '—';
+  if (ms < 1000)  return ms.toFixed(1) + 'ms';
+  if (ms < 60000) return (ms / 1000).toFixed(2) + 's';
+  return (ms / 60000).toFixed(1) + 'm';
+}
+
+function fts(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts * 1000);
+  return d.toLocaleTimeString() + '.' + String(d.getMilliseconds()).padStart(3, '0');
+}
+
+function ftsLong(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts * 1000);
+  const mo = d.toLocaleString('default', { month: 'short' });
+  return mo + ' ' + d.getDate() + ' ' +
+         d.toLocaleTimeString() + '.' + String(d.getMilliseconds()).padStart(3, '0');
+}
+
+function fdelta(t, t0) {
+  const ms = (t - t0) * 1000;
+  if (ms < 1000)  return '+' + ms.toFixed(0) + 'ms';
+  if (ms < 60000) return '+' + (ms / 1000).toFixed(2) + 's';
+  return '+' + (ms / 60000).toFixed(1) + 'm';
+}
+
+function tsToInput(ts) {
+  const d = new Date(ts * 1000);
+  const p = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate()) +
+         'T' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+}
+
+function inputToTs(s) { return s ? new Date(s).getTime() / 1000 : null; }
+
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+const OC = { enqueue:'op-enqueue', claim:'op-claim', complete:'op-complete',
+             fail:'op-fail', cancel:'op-cancel', expire:'op-expire', retry:'op-retry', purge:'op-purge' };
+function opCls(op) {
+  if (!op) return '';
+  const t = op.toLowerCase();
+  for (const [k,v] of Object.entries(OC)) if (t === k) return v;
+  return '';
+}
+
+// ── LIVE ──────────────────────────────────────────────────────────────────────
+async function livePoll() {
+  try {
+    const [jr, mr] = await Promise.all([api('/jobs'), api('/dashboard/metrics')]);
+    liveJobs   = jr.jobs || [];
+    lastPollTs = Date.now() / 1000;
+    dot('ok');
+    const m = mr;
+    document.getElementById('metrics').innerHTML =
+      'total <span class="mv">' + m.total + '</span>  ' +
+      'pending <span class="mv">' + m.pending + '</span>  ' +
+      'claimed <span class="' + (m.claimed > 0 ? 'mwrn' : 'mv') + '">' + m.claimed + '</span>  ' +
+      'done <span class="mok">' + m.done + '</span>  ' +
+      'failed <span class="' + (m.failed > 0 ? 'merr' : 'mv') + '">' + m.failed + '</span>  ' +
+      'cancelled <span class="mv">' + m.cancelled + '</span>  ' +
+      '<span style="color:var(--bd3)">|</span>  ' +
+      'avg wait <span class="mv">' + fms(m.avg_queue_wait_ms / 1000) + '</span>  ' +
+      'avg exec <span class="mv">' + fms(m.avg_exec_ms / 1000) + '</span>';
+    liveRender();
+    if (openJob && openSource === 'live') {
+      const up = liveJobs.find(j => j.id === openJob.id);
+      if (up) renderDetail(up, 'live');
+    }
+  } catch (e) { dot('err'); }
+}
+
+function liveRender() {
+  const q = document.getElementById('lf').value.toLowerCase().trim();
+  const vis = q ? liveJobs.filter(j =>
+    j.id.startsWith(q) ||
+    (j.job_type||'').toLowerCase().includes(q) ||
+    (j.status||'').includes(q)) : liveJobs;
+  document.getElementById('live-count').textContent = vis.length + ' / ' + liveJobs.length;
+  const ago = lastPollTs ? Math.round(Date.now()/1000 - lastPollTs) : null;
+  document.getElementById('live-age').textContent = ago === 0 ? 'live' : ago != null ? ago + 's ago' : '';
+  renderJobTbody('lt', vis, 'live');
+}
+
+// ── shared job table ──────────────────────────────────────────────────────────
+function renderJobTbody(id, jobs, source) {
+  const sorted = jobs.slice().sort((a,b) => (b.enqueued_at||0) - (a.enqueued_at||0));
+  if (!sorted.length) {
+    document.getElementById(id).innerHTML = '<tr class="empty-row"><td colspan="8">no jobs</td></tr>';
+    return;
+  }
+  document.getElementById(id).innerHTML = sorted.map(j => {
+    const wait = j.started_at != null && j.enqueued_at != null ? j.started_at - j.enqueued_at : null;
+    const exec = j.finished_at != null && j.started_at != null ? j.finished_at - j.started_at : null;
+    return '<tr class="row" onclick=\'showDetail(' + JSON.stringify(JSON.stringify(j)) + ',' + JSON.stringify(source) + ')\'>' +
+      '<td style="color:var(--tx5);font-size:10px">' + j.id.slice(0,8) + '…</td>' +
+      '<td>' + esc(j.job_type) + '</td>' +
+      '<td class="st-' + j.status + '">' + j.status + '</td>' +
+      '<td style="color:var(--tx3)">' + fms(wait) + '</td>' +
+      '<td style="color:var(--tx3)">' + fms(exec) + '</td>' +
+      '<td style="color:' + (j.retries>0 ? 'var(--warn)' : 'var(--tx5)') + '">' + j.retries + '</td>' +
+      '<td style="font-size:10px;color:var(--tx4)">' + esc(j.worker_id||'—') + '</td>' +
+      '<td style="color:var(--tx5);font-size:11px">' + fts(j.enqueued_at) + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+function showDetail(jobStr, source) { renderDetail(JSON.parse(jobStr), source); }
+
+// ── TIME MACHINE ──────────────────────────────────────────────────────────────
+async function tmLoadStrip() {
+  const to   = Date.now() / 1000;
+  const from = to - 3600;
+  stripRange = { from, to };
+  try {
+    const d  = await api('/replay/events?from=' + from + '&to=' + to + '&limit=2000');
+    stripEvs = d.events || [];
+    drawStrip();
+  } catch (_) {}
+}
+
+function drawStrip() {
+  const canvas = document.getElementById('tm-canvas');
+  const wrap   = document.getElementById('tm-strip');
+  canvas.width  = wrap.clientWidth  || 900;
+  canvas.height = wrap.clientHeight || 48;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (!stripRange || !stripEvs.length) return;
+
+  const { from, to } = stripRange;
+  const span = to - from || 1;
+  const W = canvas.width, H = canvas.height;
+  const cols = stripColors();
+
+  for (const ev of stripEvs) {
+    const op  = (ev.op||'').toLowerCase();
+    ctx.fillStyle = cols[op] || cols.cancel;
+    const x = ((ev.timestamp - from) / span) * W;
+    ctx.globalAlpha = isLight() ? 0.6 : 0.8;
+    ctx.fillRect(Math.floor(x), 6, 2, H - 12);
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.fillStyle = isLight() ? '#999' : '#2a2a2a';
+  ctx.font = '9px monospace';
+  ctx.fillText('-1h', 4, H - 4);
+  ctx.fillText('now', W - 24, H - 4);
+}
+
+(function () {
+  const strip  = document.getElementById('tm-strip');
+  const vline  = document.getElementById('tm-vline');
+  const hlabel = document.getElementById('tm-hlabel');
+
+  strip.addEventListener('mousemove', e => {
+    if (!stripRange) return;
+    const r    = strip.getBoundingClientRect();
+    const frac = (e.clientX - r.left) / r.width;
+    const ts   = stripRange.from + frac * (stripRange.to - stripRange.from);
+    const lx   = e.clientX - r.left;
+    vline.style.left     = lx + 'px';
+    vline.style.display  = 'block';
+    hlabel.style.left    = Math.min(lx + 4, r.width - 130) + 'px';
+    hlabel.style.display = 'block';
+    const d = new Date(ts * 1000);
+    hlabel.textContent   = d.toLocaleTimeString() + '.' + String(d.getMilliseconds()).padStart(3,'0');
+  });
+  strip.addEventListener('mouseleave', () => {
+    vline.style.display  = 'none';
+    hlabel.style.display = 'none';
+  });
+  strip.addEventListener('click', e => {
+    if (!stripRange) return;
+    const r    = strip.getBoundingClientRect();
+    const frac = (e.clientX - r.left) / r.width;
+    const ts   = stripRange.from + frac * (stripRange.to - stripRange.from);
+    document.getElementById('tm-dt').value = tsToInput(ts);
+    tmGo();
+  });
+})();
+
+function tmSetNow() {
+  document.getElementById('tm-dt').value = tsToInput(Date.now()/1000 - 60);
+  tmGo();
+}
+
+async function tmGo() {
+  const v = document.getElementById('tm-dt').value;
+  if (!v) { document.getElementById('tm-status').textContent = 'pick a time'; return; }
+  const at = inputToTs(v);
+  document.getElementById('tm-status').textContent = 'loading…';
+  try {
+    const d    = await api('/replay?at=' + at);
+    const jobs = d.jobs || [];
+    document.getElementById('tm-info').style.display = '';
+    document.getElementById('tm-at').textContent = ftsLong(d.at);
+    document.getElementById('tm-jc').textContent  = jobs.length + ' job' + (jobs.length === 1 ? '' : 's');
+    document.getElementById('tm-tbl-wrap').style.display = '';
+    document.getElementById('tm-hint').style.display     = 'none';
+    renderJobTbody('tt', jobs, 'replay');
+    document.getElementById('tm-status').textContent = '';
+  } catch (e) {
+    document.getElementById('tm-status').textContent = 'error: ' + e.message;
+  }
+}
+
+// ── EVENT LOG ─────────────────────────────────────────────────────────────────
+async function evLoad() {
+  const from  = inputToTs(document.getElementById('ef').value);
+  const to    = inputToTs(document.getElementById('et').value);
+  const limit = parseInt(document.getElementById('el').value, 10) || 500;
+  if (!from || !to) { document.getElementById('ev-status').textContent = 'set both times'; return; }
+  document.getElementById('ev-status').textContent = 'loading…';
+  try {
+    const d = await api('/replay/events?from=' + from + '&to=' + to + '&limit=' + limit);
+    renderEvTbody(d.events || []);
+    document.getElementById('ev-status').textContent = d.event_count + ' events';
+    document.getElementById('ev-hint').style.display = 'none';
+  } catch (e) {
+    document.getElementById('ev-status').textContent = 'error: ' + e.message;
+  }
+}
+
+async function evLoadJob() {
+  const id = document.getElementById('ej').value.trim();
+  if (!id) return;
+  document.getElementById('ev-status').textContent = 'loading…';
+  try {
+    const d = await api('/jobs/' + encodeURIComponent(id) + '/events');
+    renderEvTbody(d.events || []);
+    document.getElementById('ev-status').textContent = d.event_count + ' events for ' + id.slice(0,8) + '…';
+    document.getElementById('ev-hint').style.display = 'none';
+  } catch (e) {
+    document.getElementById('ev-status').textContent = 'error: ' + e.message;
+  }
+}
+
+function renderEvTbody(evs) {
+  if (!evs.length) {
+    document.getElementById('evt').innerHTML = '<tr class="empty-row"><td colspan="5">no events</td></tr>';
+    return;
+  }
+  document.getElementById('evt').innerHTML = evs.map(ev => {
+    const op  = ev.op || '?';
+    const jid = ev.job_id || '';
+    const cls = opCls(op);
+    return '<tr class="row" onclick="evRowClick(' + ev.timestamp + ',' + JSON.stringify(jid) + ')">' +
+      '<td style="color:var(--tx5);font-size:10px">' + ev.seq + '</td>' +
+      '<td style="color:var(--tx4);font-size:11px">' + ftsLong(ev.timestamp) + '</td>' +
+      '<td class="' + cls + '">' + esc(op) + '</td>' +
+      '<td style="font-size:10px;color:var(--tx5)">' + esc(jid.slice(0,8)) + '…</td>' +
+      '<td style="color:var(--tx3);font-size:11px">' + esc(evMeta(ev)) + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+function evMeta(ev) {
+  const op = (ev.op||'').toLowerCase();
+  if (op === 'enqueue')  return ev.job_type || '';
+  if (op === 'claim')    return (ev.worker_id ? 'worker: ' + ev.worker_id : '') +
+                                (ev.lease_until ? '  until: ' + fts(ev.lease_until) : '');
+  if (op === 'complete') return ev.result != null ? JSON.stringify(ev.result).slice(0, 64) : '';
+  if (op === 'fail')     return ev.error ? String(ev.error).slice(0, 64) : '';
+  return '';
+}
+
+function evRowClick(ts, jobId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  const btn = document.querySelector('[data-tab="tm"]');
+  btn.classList.add('active');
+  document.getElementById('pane-tm').classList.add('active');
+  document.getElementById('tm-dt').value = tsToInput(ts);
+  tmLoadStrip().then(() => tmGo());
+}
+
+// ── inspector ─────────────────────────────────────────────────────────────────
+function renderDetail(job, source) {
+  openJob    = job;
+  openSource = source;
+
+  document.getElementById('d-type').textContent = job.job_type;
+  const badge = document.getElementById('d-badge');
+  badge.textContent = job.status;
+  badge.className   = job.status;
+  document.getElementById('d-id').textContent = job.id;
+
+  const acts = document.getElementById('d-acts');
+  acts.innerHTML = '';
+  if (job.status === 'failed' && source === 'live') {
+    const b = document.createElement('button');
+    b.className = 'btn go'; b.textContent = 'retry job';
+    b.onclick = () => doRetry(job.id);
+    acts.appendChild(b);
+  }
+  {
+    const b = document.createElement('button');
+    b.className = 'btn'; b.textContent = 'view events';
+    b.onclick = () => {
+      document.getElementById('ej').value = job.id;
+      document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.pane').forEach(x => x.classList.remove('active'));
+      document.querySelector('[data-tab="ev"]').classList.add('active');
+      document.getElementById('pane-ev').classList.add('active');
+      evLoadJob();
+    };
+    acts.appendChild(b);
+  }
+
+  const now  = Date.now() / 1000;
+  const t0   = job.enqueued_at || now;
+  const tend = job.finished_at || now;
+  const span = Math.max(tend - t0, 0.001);
+  const qf   = job.started_at != null ? (job.started_at - t0) / span : 1;
+  const ef   = job.finished_at != null && job.started_at != null ? (job.finished_at - job.started_at) / span : 0;
+  document.getElementById('d-bq').style.cssText = 'left:0;width:' + (qf*100).toFixed(1) + '%';
+  const be = document.getElementById('d-be');
+  be.style.left       = (qf*100).toFixed(1) + '%';
+  be.style.width      = (ef*100).toFixed(1) + '%';
+
+  const s = getComputedStyle(document.documentElement);
+  const stMap = { pending:'--st-p', claimed:'--st-c', done:'--st-d', failed:'--st-f', cancelled:'--st-x' };
+  be.style.background = s.getPropertyValue(stMap[job.status] || '--tx3').trim();
+
+  const wait = job.started_at != null ? job.started_at - t0 : null;
+  const exec = job.finished_at != null && job.started_at != null ? job.finished_at - job.started_at : null;
+  let st = '';
+  if (wait != null) st += 'wait <span class="sv">' + fms(wait) + '</span>  ';
+  if (exec != null) st += 'exec <span class="sv">' + fms(exec) + '</span>  ';
+  if (job.retries > 0) st += 'retries <span class="sw">' + job.retries + '/' + job.max_retries + '</span>  ';
+  if (job.worker_id)   st += 'worker <span class="sv">' + esc(job.worker_id) + '</span>';
+  document.getElementById('d-stats').innerHTML = st || '<span style="color:var(--tx5)">pending</span>';
+
+  document.getElementById('d-trace').innerHTML = buildTrace(job);
+  document.getElementById('d-args').textContent = JSON.stringify(job.args, null, 2);
+
+  const rs = document.getElementById('d-res-sec');
+  if (job.result != null) { document.getElementById('d-res').textContent = JSON.stringify(job.result, null, 2); rs.style.display = ''; }
+  else rs.style.display = 'none';
+
+  const es = document.getElementById('d-err-sec');
+  if (job.error != null) { document.getElementById('d-err').textContent = job.error; es.style.display = ''; }
+  else es.style.display = 'none';
+
+  document.getElementById('d-json').textContent = JSON.stringify(job, null, 2);
+  loadJev(job.id);
+
+  history.replaceState(null, '', '#job=' + job.id);
+  document.getElementById('detail').style.display = 'block';
+}
+
+function buildTrace(job) {
+  const t0  = job.enqueued_at;
+  const now = Date.now() / 1000;
+  function row(cls, time, delta, ev, meta) {
+    return '<span class="te te-' + cls + '">' +
+      '<span class="te-ts">' + fts(time) + '</span>  ' +
+      '<span class="te-dt">' + delta.padEnd(10) + '</span>' +
+      '<span class="te-ev">' + ev + '</span>' +
+      (meta ? '  <span class="te-meta">' + esc(meta) + '</span>' : '') +
+      '</span>';
+  }
+  const lines = [row('enqueued', t0, 'T+0', 'ENQUEUED', '')];
+  if (job.started_at != null) {
+    lines.push(row('claimed', job.started_at, fdelta(job.started_at, t0), 'CLAIMED',
+      job.worker_id ? 'worker: ' + job.worker_id : ''));
+    if (job.finished_at != null) {
+      const ev = job.status === 'done' ? 'DONE' : job.status === 'failed' ? 'FAILED' : 'CANCELLED';
+      lines.push(row(job.status, job.finished_at, fdelta(job.finished_at, t0), ev,
+        'exec: ' + fms(job.finished_at - job.started_at)));
+    } else {
+      lines.push(row('claimed', now, fdelta(now, t0), '… running', 'elapsed: ' + fms(now - job.started_at)));
+    }
+  } else if (job.status === 'cancelled' && job.finished_at != null) {
+    lines.push(row('cancelled', job.finished_at, fdelta(job.finished_at, t0), 'CANCELLED', ''));
+  }
+  return lines.join('');
+}
+
+async function loadJev(id) {
+  const c = document.getElementById('d-jev');
+  try {
+    const d   = await api('/jobs/' + encodeURIComponent(id) + '/events');
+    const evs = d.events || [];
+    if (!evs.length) { c.innerHTML = '<div style="padding:8px;color:var(--tx5)">no events yet</div>'; return; }
+    c.innerHTML = evs.map(ev => {
+      const op  = ev.op || '?';
+      const cls = opCls(op);
+      return '<div class="jev" onclick="evRowClick(' + ev.timestamp + ',' + JSON.stringify(id) + ')">' +
+        '<span class="jev-seq">#' + ev.seq + '</span>' +
+        '<span class="jev-ts">'  + fts(ev.timestamp) + '</span>' +
+        '<span class="jev-op ' + cls + '">' + esc(op) + '</span>' +
+        '<span class="jev-meta">' + esc(evMeta(ev)) + '</span>' +
+        '</div>';
+    }).join('');
+  } catch (_) { c.innerHTML = '<div style="padding:8px;color:var(--tx3)">unavailable</div>'; }
+}
+
+function reloadJev() { if (openJob) loadJev(openJob.id); }
+
+function closeDetail() {
+  history.replaceState(null, '', window.location.pathname);
+  document.getElementById('detail').style.display = 'none';
+  openJob = null; openSource = null;
+}
+
+async function doRetry(id) {
+  try {
+    await api('/jobs/' + encodeURIComponent(id) + '/retry', { method: 'POST' });
+    closeDetail();
+    await livePoll();
+  } catch (e) { alert('retry failed: ' + e.message); }
+}
+
+function copyEl(id) { navigator.clipboard.writeText(document.getElementById(id).textContent).catch(()=>{}); }
+function copyStr(s) { navigator.clipboard.writeText(s).catch(()=>{}); }
+
+// ── init ──────────────────────────────────────────────────────────────────────
+// restore theme
+if (localStorage.getItem('vq_theme') === 'light') {
+  document.documentElement.classList.add('light');
+  document.getElementById('theme-btn').textContent = 'DARK';
+}
+
+// restore api key
+const savedKey = localStorage.getItem('vq_key');
+if (savedKey) document.getElementById('api-key-in').value = savedKey;
+
+// default time inputs
+(function () {
+  const now = Date.now() / 1000;
+  document.getElementById('et').value     = tsToInput(now);
+  document.getElementById('ef').value     = tsToInput(now - 3600);
+  document.getElementById('tm-dt').value  = tsToInput(now - 60);
+})();
+
+// restore inspector from hash
+function checkHash() {
+  const m = window.location.hash.match(/^#job=(.+)$/);
+  if (m) {
+    const j = liveJobs.find(x => x.id === m[1]);
+    if (j) renderDetail(j, 'live');
+  }
+}
+
+livePoll();
+setInterval(livePoll, 1000);
+setTimeout(checkHash, 300);
+</script>
+</body>
+</html>
